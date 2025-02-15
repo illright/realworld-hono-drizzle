@@ -1,15 +1,20 @@
 {
-  "name": "realworld-hono-drizzle",
-  "type": "module",
-  "scripts": {
-    "dev": "tsx watch src/index.ts"
-  },
-  "dependencies": {
-    "@hono/node-server": "^1.13.8",
-    "hono": "^4.7.1"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.17",
-    "tsx": "^4.7.1"
-  }
+	"name": "realworld-hono-drizzle",
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch src/index.ts",
+		"check": "biome check"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.13.8",
+		"hono": "^4.7.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/node": "^20.11.17",
+		"tsx": "^4.7.1"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": ["@biomejs/biome"]
+	}
 }
