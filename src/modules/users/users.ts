@@ -1,20 +1,23 @@
 import { vValidator } from "@hono/valibot-validator";
 import bcrypt from "bcryptjs";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
-import { type JwtVariables, sign } from "hono/jwt";
+import { sign } from "hono/jwt";
 import { parse } from "valibot";
 
 import { db } from "../../db/drizzle.js";
 import { usersTable } from "../../db/schema.js";
-import { LoginCredentials, UserResponse } from "./schema.js";
+import {
+	LoginCredentials,
+	RegistrationDetails,
+	UserResponse,
+} from "./schema.js";
 
 if (!process.env.JWT_SECRET) {
 	throw new Error("Env JWT_SECRET is not defined, see .env.example");
 }
 
-export const usersModule = new Hono<{ Variables: JwtVariables }>();
+export const usersModule = new Hono();
 
 usersModule.post("/login", vValidator("json", LoginCredentials), async (c) => {
 	const requestData = c.req.valid("json");
@@ -29,6 +32,40 @@ usersModule.post("/login", vValidator("json", LoginCredentials), async (c) => {
 	if (!isMatch) {
 		return c.json({ errors: { password: ["invalid for this email"] } }, 422);
 	}
+
+	// biome-ignore lint/style/noNonNullAssertion: this whole module won't load if JWT_SECRET is not defined
+	const token = await sign({ id: user.id }, process.env.JWT_SECRET!);
+
+	return c.json(parse(UserResponse, { user: { ...user, token } }));
+});
+
+usersModule.post("/", vValidator("json", RegistrationDetails), async (c) => {
+	const requestData = c.req.valid("json");
+
+	const existingUser = await db.query.usersTable.findFirst({
+		where: or(
+			eq(usersTable.email, requestData.user.email),
+			eq(usersTable.username, requestData.user.username),
+		),
+	});
+
+	if (existingUser?.email === requestData.user.email) {
+		return c.json({ errors: { email: ["already in use"] } }, 422);
+	}
+	if (existingUser?.username === requestData.user.username) {
+		return c.json({ errors: { username: ["already in use"] } }, 422);
+	}
+
+	const passwordHash = await bcrypt.hash(requestData.user.password, 10);
+
+	const [user] = await db
+		.insert(usersTable)
+		.values({
+			email: requestData.user.email,
+			username: requestData.user.username,
+			passwordHash,
+		})
+		.returning();
 
 	// biome-ignore lint/style/noNonNullAssertion: this whole module won't load if JWT_SECRET is not defined
 	const token = await sign({ id: user.id }, process.env.JWT_SECRET!);

@@ -28,3 +28,4 @@ lerna-debug.log*
 .DS_Store
 
 *.db
+Conduit.postman_collection.json
