@@ -5,4 +5,5 @@ export const usersTable = sqliteTable("users_table", {
 	email: text().notNull().unique(),
 	bio: text(),
 	image: text(),
+	passwordHash: text().notNull(),
 });

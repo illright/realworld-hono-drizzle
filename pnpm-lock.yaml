@@ -11,9 +11,15 @@ importers:
       '@hono/node-server':
         specifier: ^1.13.8
         version: 1.13.8(hono@4.7.1)
+      '@hono/valibot-validator':
+        specifier: ^0.5.2
+        version: 0.5.2(hono@4.7.1)(valibot@1.0.0-rc.0)
       '@libsql/client':
         specifier: ^0.14.0
         version: 0.14.0
+      bcryptjs:
+        specifier: ^3.0.0
+        version: 3.0.0
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
@@ -23,6 +29,9 @@ importers:
       hono:
         specifier: ^4.7.1
         version: 4.7.1
+      valibot:
+        specifier: 1.0.0-rc.0
+        version: 1.0.0-rc.0
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -526,6 +535,12 @@ packages:
     peerDependencies:
       hono: ^4
 
+  '@hono/valibot-validator@0.5.2':
+    resolution: {integrity: sha512-WbTr8PCFNAME0ale62rmmq+E8bGp5a7VPiVNmNT+Ue12GJE3Ax+CWBGtHhR0TzAEiloPvJND3IbjHIgtNtsqhw==}
+    peerDependencies:
+      hono: '>=3.9.0'
+      valibot: ^1.0.0 || ^1.0.0-beta.4 || ^1.0.0-rc
+
   '@libsql/client@0.14.0':
     resolution: {integrity: sha512-/9HEKfn6fwXB5aTEEoMeFh4CtG0ZzbncBb1e++OCdVpgKZ/xyMsIVYXm0w7Pv4RUel803vE6LwniB3PqD72R0Q==}
 
@@ -585,6 +600,10 @@ packages:
 
   '@types/ws@8.5.14':
     resolution: {integrity: sha512-bd/YFLW+URhBzMXurx7lWByOu+xzU9+kb3RboOteXYDfW+tr+JZa99OyNmPINEGB/ahzKrEuc8rcv4gnpJmxTw==}
+
+  bcryptjs@3.0.0:
+    resolution: {integrity: sha512-Q2vVGpGC7B7m9wggpcA5lq4OYR5OS1nrXoUpnH9MmogXU8HpxzKg63uxtCrLebY5v/y3o0r7JcGCpR/vTGGn7A==}
+    hasBin: true
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
@@ -783,6 +802,14 @@ packages:
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
+  valibot@1.0.0-rc.0:
+    resolution: {integrity: sha512-9ZUrOXOejY/WaIn8p0Z469R1qBAwNJeqq8jzOIDsl1qR8gqtObHQmyHLFli0UCkcGiTco5kH6/KPLWsTWE9b2g==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -1060,6 +1087,11 @@ snapshots:
     dependencies:
       hono: 4.7.1
 
+  '@hono/valibot-validator@0.5.2(hono@4.7.1)(valibot@1.0.0-rc.0)':
+    dependencies:
+      hono: 4.7.1
+      valibot: 1.0.0-rc.0
+
   '@libsql/client@0.14.0':
     dependencies:
       '@libsql/core': 0.14.0
@@ -1125,6 +1157,8 @@ snapshots:
   '@types/ws@8.5.14':
     dependencies:
       '@types/node': 20.17.19
+
+  bcryptjs@3.0.0: {}
 
   buffer-from@1.1.2: {}
 
@@ -1300,6 +1334,8 @@ snapshots:
       fsevents: 2.3.3
 
   undici-types@6.19.8: {}
+
+  valibot@1.0.0-rc.0: {}
 
   web-streams-polyfill@3.3.3: {}
 
