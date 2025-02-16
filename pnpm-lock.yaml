@@ -36,6 +36,9 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
+      '@snaplet/copycat':
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^20.11.17
         version: 20.17.19
@@ -529,6 +532,10 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@faker-js/faker@8.4.1':
+    resolution: {integrity: sha512-XQ3cU+Q8Uqmrbf2e0cIC/QN43sTBSC8KF12u29Mb47tWrt2hAgBXSgpZMj4Ao8Uk0iJcU99QsOCaIL8934obCg==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0, npm: '>=6.14.13'}
+
   '@hono/node-server@1.13.8':
     resolution: {integrity: sha512-fsn8ucecsAXUoVxrUil0m13kOEq4mkX4/4QozCqmY+HpGfKl74OYSn8JcMA8GnG0ClfdRI4/ZSeG7zhFaVg+wg==}
     engines: {node: '>=18.14.1'}
@@ -595,6 +602,9 @@ packages:
   '@neon-rs/load@0.0.4':
     resolution: {integrity: sha512-kTPhdZyTQxB+2wpiRcFWrDcejc4JI6tkPuS7UZCG4l6Zvc5kU/gGQ/ozvHTh1XR5tS+UlfAfGuPajjzQjCiHCw==}
 
+  '@snaplet/copycat@6.0.0':
+    resolution: {integrity: sha512-ZBxlsWfhd+fxubKHrZglUQmSxHe70sGxHqTPiIBqoqX/41jABG8VCbgB8KrMm8to6V6Y/tBMqQUGzuWFFNHimg==}
+
   '@types/node@20.17.19':
     resolution: {integrity: sha512-LEwC7o1ifqg/6r2gn9Dns0f1rhK+fPFDoMiceTJ6kWmVk6bgXBI/9IOWfVan4WiAavK9pIVWdX0/e3J+eEUh5A==}
 
@@ -620,6 +630,9 @@ packages:
     peerDependenciesMeta:
       supports-color:
         optional: true
+
+  decimal.js@10.5.0:
+    resolution: {integrity: sha512-8vDa8Qxvr/+d94hSh5P3IJwI5t8/c0KsMp+g8bNw9cY2icONa5aPfvKeieW1WlG0WQYwwhJ7mjui2xtiePQSXw==}
 
   detect-libc@2.0.2:
     resolution: {integrity: sha512-UX6sGumvvqSaXgdKGUsgZWqcUyIXZ/vZTrlRT/iobiKhGL0zL4d3osHj3uqllWJK+i+sixDS/3COVEOFbupFyw==}
@@ -739,9 +752,18 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  fast-json-stable-stringify@2.1.0:
+    resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
+
   fetch-blob@3.2.0:
     resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
     engines: {node: ^12.20 || >= 14.13}
+
+  fictional@3.0.1:
+    resolution: {integrity: sha512-0JUaxdMWoyj/Udv4ourUzXgfu7fVdanGGYLFz5aWecPhhKpxoBBBxsfNowOKH4cuYgEFia65OY3spsYKkHe2ew==}
+
+  fnv-plus@1.3.1:
+    resolution: {integrity: sha512-Gz1EvfOneuFfk4yG458dJ3TLJ7gV19q3OM/vVvvHf7eT02Hm1DleB4edsia6ahbKgAYxO9gvyQ1ioWZR+a00Yw==}
 
   formdata-polyfill@4.0.10:
     resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
@@ -788,12 +810,19 @@ packages:
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
 
+  siphash@1.2.0:
+    resolution: {integrity: sha512-zGo/O5A0Nr4oSteEAMlhemqQpCBbVTRaTjUQdO+QFUqe1iofq/NNPe2W1RxJreh89fIk6NhQcNi41UeTGCvr+g==}
+
   source-map-support@0.5.21:
     resolution: {integrity: sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==}
 
   source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
+
+  string-argv@0.3.2:
+    resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
+    engines: {node: '>=0.6.19'}
 
   tsx@4.19.2:
     resolution: {integrity: sha512-pOUl6Vo2LUq/bSa8S5q7b91cgNSjctn9ugq/+Mvow99qW6x/UZYwzxy/3NmqoT66eHYfCVvFvACC58UBPFf28g==}
@@ -802,6 +831,10 @@ packages:
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
+  uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    hasBin: true
 
   valibot@1.0.0-rc.0:
     resolution: {integrity: sha512-9ZUrOXOejY/WaIn8p0Z469R1qBAwNJeqq8jzOIDsl1qR8gqtObHQmyHLFli0UCkcGiTco5kH6/KPLWsTWE9b2g==}
@@ -1083,6 +1116,8 @@ snapshots:
   '@esbuild/win32-x64@0.23.1':
     optional: true
 
+  '@faker-js/faker@8.4.1': {}
+
   '@hono/node-server@1.13.8(hono@4.7.1)':
     dependencies:
       hono: 4.7.1
@@ -1150,6 +1185,13 @@ snapshots:
 
   '@neon-rs/load@0.0.4': {}
 
+  '@snaplet/copycat@6.0.0':
+    dependencies:
+      '@faker-js/faker': 8.4.1
+      fictional: 3.0.1
+      string-argv: 0.3.2
+      uuid: 9.0.1
+
   '@types/node@20.17.19':
     dependencies:
       undici-types: 6.19.8
@@ -1167,6 +1209,8 @@ snapshots:
   debug@4.4.0:
     dependencies:
       ms: 2.1.3
+
+  decimal.js@10.5.0: {}
 
   detect-libc@2.0.2: {}
 
@@ -1270,10 +1314,21 @@ snapshots:
       '@esbuild/win32-ia32': 0.23.1
       '@esbuild/win32-x64': 0.23.1
 
+  fast-json-stable-stringify@2.1.0: {}
+
   fetch-blob@3.2.0:
     dependencies:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.3.3
+
+  fictional@3.0.1:
+    dependencies:
+      decimal.js: 10.5.0
+      fast-json-stable-stringify: 2.1.0
+      fnv-plus: 1.3.1
+      siphash: 1.2.0
+
+  fnv-plus@1.3.1: {}
 
   formdata-polyfill@4.0.10:
     dependencies:
@@ -1319,12 +1374,16 @@ snapshots:
 
   resolve-pkg-maps@1.0.0: {}
 
+  siphash@1.2.0: {}
+
   source-map-support@0.5.21:
     dependencies:
       buffer-from: 1.1.2
       source-map: 0.6.1
 
   source-map@0.6.1: {}
+
+  string-argv@0.3.2: {}
 
   tsx@4.19.2:
     dependencies:
@@ -1334,6 +1393,8 @@ snapshots:
       fsevents: 2.3.3
 
   undici-types@6.19.8: {}
+
+  uuid@9.0.1: {}
 
   valibot@1.0.0-rc.0: {}
 
