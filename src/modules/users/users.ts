@@ -27,7 +27,7 @@ usersModule.post("/login", vValidator("json", LoginCredentials), async (c) => {
 		(await bcrypt.compare(requestData.user.password, user.passwordHash));
 
 	if (!isMatch) {
-		throw new HTTPException(403, { message: "Invalid credentials" });
+		return c.json({ errors: { password: ["invalid for this email"] } }, 422);
 	}
 
 	// biome-ignore lint/style/noNonNullAssertion: this whole module won't load if JWT_SECRET is not defined
