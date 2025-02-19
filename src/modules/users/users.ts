@@ -5,6 +5,7 @@ import { Hono } from "hono";
 import { sign } from "hono/jwt";
 import { parse } from "valibot";
 
+import { JwtClaims } from "../../auth.js";
 import { db } from "../../db/drizzle.js";
 import { usersTable } from "../../db/schema.js";
 import {
@@ -34,7 +35,7 @@ usersModule.post("/login", vValidator("json", LoginCredentials), async (c) => {
 	}
 
 	// biome-ignore lint/style/noNonNullAssertion: this whole module won't load if JWT_SECRET is not defined
-	const token = await sign({ id: user.id }, process.env.JWT_SECRET!);
+	const token = await sign(parse(JwtClaims, user), process.env.JWT_SECRET!);
 
 	return c.json(parse(UserResponse, { user: { ...user, token } }));
 });
@@ -68,7 +69,7 @@ usersModule.post("/", vValidator("json", RegistrationDetails), async (c) => {
 		.returning();
 
 	// biome-ignore lint/style/noNonNullAssertion: this whole module won't load if JWT_SECRET is not defined
-	const token = await sign({ id: user.id }, process.env.JWT_SECRET!);
+	const token = await sign(parse(JwtClaims, user), process.env.JWT_SECRET!);
 
 	return c.json(parse(UserResponse, { user: { ...user, token } }));
 });

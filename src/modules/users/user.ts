@@ -11,9 +11,9 @@ import { UpdatedDetails, UserResponse } from "./schema.js";
 export const userModule = new Hono().use(jwtAuth).use(exposeToken);
 
 userModule.get("/", async (c) => {
-	const payload = c.get("jwtPayload");
+	const self = c.get("jwtPayload");
 	const user = await db.query.usersTable.findFirst({
-		where: eq(usersTable.id, payload.id),
+		where: eq(usersTable.id, self.id),
 	});
 
 	if (user === undefined) {
@@ -26,9 +26,9 @@ userModule.get("/", async (c) => {
 });
 
 userModule.put("/", vValidator("json", UpdatedDetails), async (c) => {
-	const payload = c.get("jwtPayload");
+	const self = c.get("jwtPayload");
 	const user = await db.query.usersTable.findFirst({
-		where: eq(usersTable.id, payload.id),
+		where: eq(usersTable.id, self.id),
 	});
 
 	if (user === undefined) {
@@ -39,7 +39,7 @@ userModule.put("/", vValidator("json", UpdatedDetails), async (c) => {
 	const [updatedUser] = await db
 		.update(usersTable)
 		.set(requestData.user)
-		.where(eq(usersTable.id, payload.id))
+		.where(eq(usersTable.id, self.id))
 		.returning();
 
 	return c.json(
