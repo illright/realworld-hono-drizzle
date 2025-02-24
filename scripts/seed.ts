@@ -2,6 +2,7 @@ import "dotenv/config";
 import { copycat } from "@snaplet/copycat";
 import bcrypt from "bcryptjs";
 
+import slugify from "@sindresorhus/slugify";
 import { db } from "../src/db/drizzle.js";
 import * as schema from "../src/db/schema.js";
 
@@ -20,7 +21,7 @@ function createUser(seedPhrase: string) {
 
 function makeArticle(seedPhrase: string) {
 	const title = copycat.sentence(seedPhrase);
-	const slug = title.toLowerCase().replace(/ /g, "-");
+	const slug = slugify(title);
 	return {
 		slug,
 		title,

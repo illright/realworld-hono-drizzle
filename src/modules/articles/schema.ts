@@ -1,4 +1,12 @@
-import { array, boolean, number, object, omit, string } from "valibot";
+import {
+	array,
+	boolean,
+	number,
+	object,
+	omit,
+	optional,
+	string,
+} from "valibot";
 import { Profile } from "../profiles/schema.js";
 
 const Article = object({
@@ -21,4 +29,11 @@ export const SingleArticleResponse = object({
 export const MultipleArticlesResponse = object({
 	articles: array(omit(Article, ["body"])),
 	articlesCount: number(),
+});
+
+export const ArticleToCreate = object({
+	title: string(),
+	description: string(),
+	body: string(),
+	tagList: optional(array(string())),
 });
