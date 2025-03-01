@@ -13,7 +13,7 @@ importers:
         version: 1.13.8(hono@4.7.1)
       '@hono/valibot-validator':
         specifier: ^0.5.2
-        version: 0.5.2(hono@4.7.1)(valibot@1.0.0-rc.0)
+        version: 0.5.2(hono@4.7.1)(valibot@1.0.0-rc.0(typescript@5.8.2))
       '@libsql/client':
         specifier: ^0.14.0
         version: 0.14.0
@@ -34,7 +34,7 @@ importers:
         version: 4.7.1
       valibot:
         specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0
+        version: 1.0.0-rc.0(typescript@5.8.2)
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -54,6 +54,9 @@ importers:
       tsx:
         specifier: ^4.19.2
         version: 4.19.2
+      typescript:
+        specifier: ^5.8.2
+        version: 5.8.2
 
 packages:
 
@@ -844,6 +847,11 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
+  typescript@5.8.2:
+    resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
@@ -1137,10 +1145,10 @@ snapshots:
     dependencies:
       hono: 4.7.1
 
-  '@hono/valibot-validator@0.5.2(hono@4.7.1)(valibot@1.0.0-rc.0)':
+  '@hono/valibot-validator@0.5.2(hono@4.7.1)(valibot@1.0.0-rc.0(typescript@5.8.2))':
     dependencies:
       hono: 4.7.1
-      valibot: 1.0.0-rc.0
+      valibot: 1.0.0-rc.0(typescript@5.8.2)
 
   '@libsql/client@0.14.0':
     dependencies:
@@ -1418,11 +1426,15 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  typescript@5.8.2: {}
+
   undici-types@6.19.8: {}
 
   uuid@9.0.1: {}
 
-  valibot@1.0.0-rc.0: {}
+  valibot@1.0.0-rc.0(typescript@5.8.2):
+    optionalDependencies:
+      typescript: 5.8.2
 
   web-streams-polyfill@3.3.3: {}
 

@@ -4,6 +4,7 @@
 		"module": "NodeNext",
 		"strict": true,
 		"verbatimModuleSyntax": true,
+		"noUncheckedIndexedAccess": true,
 		"skipLibCheck": true,
 		"types": ["node"],
 		"jsx": "react-jsx",

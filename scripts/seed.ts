@@ -44,10 +44,14 @@ await db.delete(schema.usersTable);
 const user1 = createUser("user1");
 const user2 = createUser("user2");
 const user3 = createUser("user3");
-const [{ id: user1Id }, { id: user2Id }, { id: user3Id }] = await db
+const [{ id: user1Id }, { id: user2Id }, { id: user3Id }] = (await db
 	.insert(schema.usersTable)
 	.values([user1, user2, user3].map(hashPassword))
-	.returning({ id: schema.usersTable.id });
+	.returning({ id: schema.usersTable.id })) as [
+	{ id: number },
+	{ id: number },
+	{ id: number },
+];
 
 await db.insert(schema.articlesTable).values([
 	{ ...makeArticle("article1"), authorId: user1Id },

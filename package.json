@@ -23,7 +23,8 @@
 		"@types/node": "^20.11.17",
 		"drizzle-kit": "^0.30.4",
 		"husky": "^9.1.7",
-		"tsx": "^4.19.2"
+		"tsx": "^4.19.2",
+		"typescript": "^5.8.2"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": ["@biomejs/biome", "esbuild"]
