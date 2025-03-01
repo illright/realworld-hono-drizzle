@@ -28,6 +28,7 @@ import {
 	ArticleToCreate,
 	MultipleArticlesResponse,
 	SingleArticleResponse,
+	UpdatedArticle,
 } from "./schema.js";
 
 export const articlesModule = new Hono();
@@ -304,3 +305,67 @@ articlesModule.post(
 		return c.json(parse(SingleArticleResponse, { article }));
 	},
 );
+
+articlesModule.put(
+	"/:slug",
+	jwtAuth,
+	vValidator("json", UpdatedArticle),
+	async (c) => {
+		const self = c.get("jwtPayload");
+
+		let slug = c.req.param("slug");
+		const { article: articlePayload } = c.req.valid("json");
+
+		const [articleOwnership] = await db
+			.select({ isOwned: eq(articlesTable.authorId, self.id) })
+			.from(articlesTable)
+			.where(eq(articlesTable.slug, slug));
+
+		if (articleOwnership === undefined) {
+			return c.notFound();
+		}
+		if (!articleOwnership.isOwned) {
+			return new Response("Forbidden", { status: 403 });
+		}
+
+		await db
+			.update(articlesTable)
+			.set(articlePayload)
+			.where(eq(articlesTable.slug, slug));
+
+		if (articlePayload.title !== undefined) {
+			const newSlug = slugify(articlePayload.title);
+			await db
+				.update(articlesTable)
+				.set({ slug: newSlug })
+				.where(eq(articlesTable.slug, slug));
+			slug = newSlug;
+		}
+
+		const article = await findArticle(slug, self);
+
+		return c.json(parse(SingleArticleResponse, { article }));
+	},
+);
+
+articlesModule.delete("/:slug", jwtAuth, async (c) => {
+	const self = c.get("jwtPayload");
+
+	const slug = c.req.param("slug");
+
+	const [articleOwnership] = await db
+		.select({ isOwned: eq(articlesTable.authorId, self.id) })
+		.from(articlesTable)
+		.where(eq(articlesTable.slug, slug));
+
+	if (articleOwnership === undefined) {
+		return c.notFound();
+	}
+	if (!articleOwnership.isOwned) {
+		return new Response("Forbidden", { status: 403 });
+	}
+
+	await db.delete(articlesTable).where(eq(articlesTable.slug, slug));
+
+	return new Response(null, { status: 204 });
+});

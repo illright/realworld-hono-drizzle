@@ -5,6 +5,7 @@ import {
 	object,
 	omit,
 	optional,
+	partial,
 	string,
 } from "valibot";
 import { Profile } from "../profiles/schema.js";
@@ -38,4 +39,14 @@ export const ArticleToCreate = object({
 		body: string(),
 		tagList: optional(array(string())),
 	}),
+});
+
+export const UpdatedArticle = object({
+	article: partial(
+		object({
+			title: string(),
+			description: string(),
+			body: string(),
+		}),
+	),
 });
