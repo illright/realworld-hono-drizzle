@@ -32,8 +32,10 @@ export const MultipleArticlesResponse = object({
 });
 
 export const ArticleToCreate = object({
-	title: string(),
-	description: string(),
-	body: string(),
-	tagList: optional(array(string())),
+	article: object({
+		title: string(),
+		description: string(),
+		body: string(),
+		tagList: optional(array(string())),
+	}),
 });

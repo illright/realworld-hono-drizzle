@@ -13,7 +13,7 @@ import {
 import type { SQLiteColumn } from "drizzle-orm/sqlite-core";
 import { Hono } from "hono";
 import { decode } from "hono/jwt";
-import { array, parse, string } from "valibot";
+import { type InferOutput, array, parse, string } from "valibot";
 import { JwtClaims, exposeToken, jwtAuth } from "../../auth.js";
 import { db } from "../../db/drizzle.js";
 import {
@@ -63,6 +63,48 @@ function isFavorited({
 				),
 			),
 	);
+}
+
+async function findArticle(
+	slug: string,
+	self: InferOutput<typeof JwtClaims> | null,
+) {
+	const [article] = await db
+		.select({
+			...getTableColumns(articlesTable),
+			favorited: (self === null
+				? sql<number>`0`
+				: isFavorited({ articleSlug: articlesTable.slug, me: self.id })
+			).mapWith(Boolean),
+			favoritesCount: count(articleFavoriteTable.userId).as("favoritesCount"),
+			tagList:
+				sql<string>`json_group_array(DISTINCT ${articleTagTable.tag}) filter (where ${articleTagTable.tag} is not null)`.mapWith(
+					(tagList) => parse(TagList, JSON.parse(tagList)),
+				),
+			author: {
+				username: usersTable.username,
+				bio: usersTable.bio,
+				image: usersTable.image,
+				following: (self === null
+					? sql<number>`0`
+					: amIFollowing({ them: articlesTable.authorId, me: self.id })
+				).mapWith(Boolean),
+			},
+		})
+		.from(articlesTable)
+		.leftJoin(
+			articleFavoriteTable,
+			eq(articlesTable.slug, articleFavoriteTable.articleSlug),
+		)
+		.leftJoin(
+			articleTagTable,
+			eq(articlesTable.slug, articleTagTable.articleSlug),
+		)
+		.innerJoin(usersTable, eq(articlesTable.authorId, usersTable.id))
+		.where(eq(articlesTable.slug, slug))
+		.groupBy(articlesTable.slug);
+
+	return article;
 }
 
 articlesModule.get("/", exposeToken, async (c) => {
@@ -225,40 +267,7 @@ articlesModule.get("/:slug", exposeToken, async (c) => {
 
 	const slug = c.req.param("slug");
 
-	const [article] = await db
-		.select({
-			...getTableColumns(articlesTable),
-			favorited: (self === null
-				? sql<number>`0`
-				: isFavorited({ articleSlug: articlesTable.slug, me: self.id })
-			).mapWith(Boolean),
-			favoritesCount: count(articleFavoriteTable.userId).as("favoritesCount"),
-			tagList:
-				sql<string>`json_group_array(DISTINCT ${articleTagTable.tag}) filter (where ${articleTagTable.tag} is not null)`.mapWith(
-					(tagList) => parse(TagList, JSON.parse(tagList)),
-				),
-			author: {
-				username: usersTable.username,
-				bio: usersTable.bio,
-				image: usersTable.image,
-				following: (self === null
-					? sql<number>`0`
-					: amIFollowing({ them: articlesTable.authorId, me: self.id })
-				).mapWith(Boolean),
-			},
-		})
-		.from(articlesTable)
-		.leftJoin(
-			articleFavoriteTable,
-			eq(articlesTable.slug, articleFavoriteTable.articleSlug),
-		)
-		.leftJoin(
-			articleTagTable,
-			eq(articlesTable.slug, articleTagTable.articleSlug),
-		)
-		.innerJoin(usersTable, eq(articlesTable.authorId, usersTable.id))
-		.where(eq(articlesTable.slug, slug))
-		.groupBy(articlesTable.slug);
+	const article = await findArticle(slug, self);
 
 	if (article === undefined) {
 		return c.notFound();
@@ -268,18 +277,14 @@ articlesModule.get("/:slug", exposeToken, async (c) => {
 });
 
 articlesModule.post(
-	"/:slug",
+	"/",
 	jwtAuth,
 	vValidator("json", ArticleToCreate),
 	async (c) => {
 		const self = c.get("jwtPayload");
 
-		const { tagList, ...articlePayload } = c.req.valid("json");
+		const { tagList, ...articlePayload } = c.req.valid("json").article;
 		const slug = slugify(articlePayload.title);
-
-		if (tagList !== undefined) {
-			await db.insert(tagsTable).values(tagList.map((tag) => ({ tag })));
-		}
 
 		await db.insert(articlesTable).values({
 			slug,
@@ -287,40 +292,14 @@ articlesModule.post(
 			authorId: self.id,
 		});
 
-		const [article] = await db
-			.select({
-				...getTableColumns(articlesTable),
-				favorited: (self === null
-					? sql<number>`0`
-					: isFavorited({ articleSlug: articlesTable.slug, me: self.id })
-				).mapWith(Boolean),
-				favoritesCount: count(articleFavoriteTable.userId).as("favoritesCount"),
-				tagList:
-					sql<string>`json_group_array(DISTINCT ${articleTagTable.tag}) filter (where ${articleTagTable.tag} is not null)`.mapWith(
-						(tagList) => parse(TagList, JSON.parse(tagList)),
-					),
-				author: {
-					username: usersTable.username,
-					bio: usersTable.bio,
-					image: usersTable.image,
-					following: (self === null
-						? sql<number>`0`
-						: amIFollowing({ them: articlesTable.authorId, me: self.id })
-					).mapWith(Boolean),
-				},
-			})
-			.from(articlesTable)
-			.leftJoin(
-				articleFavoriteTable,
-				eq(articlesTable.slug, articleFavoriteTable.articleSlug),
-			)
-			.leftJoin(
-				articleTagTable,
-				eq(articlesTable.slug, articleTagTable.articleSlug),
-			)
-			.innerJoin(usersTable, eq(articlesTable.authorId, usersTable.id))
-			.where(eq(articlesTable.slug, slug))
-			.groupBy(articlesTable.slug);
+		if (tagList !== undefined) {
+			await db.insert(tagsTable).values(tagList.map((tag) => ({ tag })));
+			await db
+				.insert(articleTagTable)
+				.values(tagList.map((tag) => ({ articleSlug: slug, tag })));
+		}
+
+		const article = await findArticle(slug, self);
 
 		return c.json(parse(SingleArticleResponse, { article }));
 	},
