@@ -82,6 +82,14 @@ articlesModule.get("/", exposeToken, async (c) => {
 		...desiredColumns
 	} = getTableColumns(articlesTable);
 
+	const slugsWithTagFilter = tagFilter
+		? db
+				.select({ slug: articleTagTable.articleSlug })
+				.from(articleTagTable)
+				.where(eq(articleTagTable.tag, tagFilter))
+				.as("slugsWithTagFilter")
+		: null;
+
 	const favoritingUsersTable = aliasedTable(usersTable, "favoritingUsersTable");
 	const articles = await db
 		.select({
@@ -115,13 +123,20 @@ articlesModule.get("/", exposeToken, async (c) => {
 			eq(articlesTable.slug, articleTagTable.articleSlug),
 		)
 		.innerJoin(usersTable, eq(articlesTable.authorId, usersTable.id))
-		.innerJoin(
+		.leftJoin(
 			favoritingUsersTable,
 			eq(favoritingUsersTable.id, articleFavoriteTable.userId),
 		)
 		.where(
 			and(
-				tagFilter ? eq(articleTagTable.tag, tagFilter) : undefined,
+				slugsWithTagFilter
+					? exists(
+							db
+								.select()
+								.from(slugsWithTagFilter)
+								.where(eq(slugsWithTagFilter.slug, articlesTable.slug)),
+						)
+					: undefined,
 				authorFilter ? eq(usersTable.username, authorFilter) : undefined,
 				favoritedFilter
 					? eq(favoritingUsersTable.username, favoritedFilter)
