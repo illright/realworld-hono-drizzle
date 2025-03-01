@@ -112,7 +112,7 @@ export const articleTagRelations = relations(articleTagTable, ({ one }) => ({
 		fields: [articleTagTable.articleSlug],
 		references: [articlesTable.slug],
 	}),
-	user: one(tagsTable, {
+	tag: one(tagsTable, {
 		fields: [articleTagTable.tag],
 		references: [tagsTable.tag],
 	}),
