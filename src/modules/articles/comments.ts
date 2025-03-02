@@ -5,8 +5,8 @@ import { parse } from "valibot";
 
 import { vValidator } from "@hono/valibot-validator";
 import { JwtClaims, exposeToken, jwtAuth } from "../../auth.js";
-import { db } from "../../db/drizzle.js";
 import { articlesTable, commentsTable, usersTable } from "../../db/schema.js";
+import type { ThisAppEnv } from "../../factory.js";
 import { amIFollowing } from "./am-i-following.js";
 import {
 	CommentToCreate,
@@ -14,9 +14,10 @@ import {
 	SingleCommentResponse,
 } from "./schema.js";
 
-export const commentsModule = new Hono();
+export const commentsModule = new Hono<ThisAppEnv>();
 
 commentsModule.get("/:slug/comments", exposeToken, async (c) => {
+	const db = c.get("db");
 	const token = c.get("token");
 	const self =
 		token !== undefined ? parse(JwtClaims, decode(token).payload) : null;
@@ -46,7 +47,7 @@ commentsModule.get("/:slug/comments", exposeToken, async (c) => {
 				image: usersTable.image,
 				following: (self === null
 					? sql<number>`0`
-					: amIFollowing({ them: commentsTable.authorId, me: self.id })
+					: amIFollowing({ db, them: commentsTable.authorId, me: self.id })
 				).mapWith(Boolean),
 			},
 		})
@@ -62,6 +63,7 @@ commentsModule.post(
 	jwtAuth,
 	vValidator("json", CommentToCreate),
 	async (c) => {
+		const db = c.get("db");
 		const self = c.get("jwtPayload");
 
 		const slug = c.req.param("slug");
@@ -111,6 +113,7 @@ commentsModule.post(
 );
 
 commentsModule.delete("/:slug/comments/:id", jwtAuth, async (c) => {
+	const db = c.get("db");
 	const self = c.get("jwtPayload");
 
 	const slug = c.req.param("slug");

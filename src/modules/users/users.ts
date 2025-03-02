@@ -6,21 +6,18 @@ import { sign } from "hono/jwt";
 import { parse } from "valibot";
 
 import { JwtClaims } from "../../auth.js";
-import { db } from "../../db/drizzle.js";
 import { usersTable } from "../../db/schema.js";
+import type { ThisAppEnv } from "../../factory.js";
 import {
 	LoginCredentials,
 	RegistrationDetails,
 	UserResponse,
 } from "./schema.js";
 
-if (!process.env.JWT_SECRET) {
-	throw new Error("Env JWT_SECRET is not defined, see .env.example");
-}
-
-export const usersModule = new Hono();
+export const usersModule = new Hono<ThisAppEnv>();
 
 usersModule.post("/login", vValidator("json", LoginCredentials), async (c) => {
+	const db = c.get("db");
 	const requestData = c.req.valid("json");
 	const user = await db.query.usersTable.findFirst({
 		where: eq(usersTable.email, requestData.user.email),
@@ -34,13 +31,13 @@ usersModule.post("/login", vValidator("json", LoginCredentials), async (c) => {
 		return c.json({ errors: { password: ["invalid for this email"] } }, 422);
 	}
 
-	// biome-ignore lint/style/noNonNullAssertion: this whole module won't load if JWT_SECRET is not defined
-	const token = await sign(parse(JwtClaims, user), process.env.JWT_SECRET!);
+	const token = await sign(parse(JwtClaims, user), c.env.JWT_SECRET);
 
 	return c.json(parse(UserResponse, { user: { ...user, token } }));
 });
 
 usersModule.post("/", vValidator("json", RegistrationDetails), async (c) => {
+	const db = c.get("db");
 	const requestData = c.req.valid("json");
 
 	const existingUser = await db.query.usersTable.findFirst({
@@ -68,8 +65,7 @@ usersModule.post("/", vValidator("json", RegistrationDetails), async (c) => {
 		})
 		.returning();
 
-	// biome-ignore lint/style/noNonNullAssertion: this whole module won't load if JWT_SECRET is not defined
-	const token = await sign(parse(JwtClaims, user), process.env.JWT_SECRET!);
+	const token = await sign(parse(JwtClaims, user), c.env.JWT_SECRET);
 
 	return c.json(parse(UserResponse, { user: { ...user, token } }));
 });

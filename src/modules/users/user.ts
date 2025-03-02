@@ -4,13 +4,14 @@ import { Hono } from "hono";
 import { parse } from "valibot";
 
 import { exposeToken, jwtAuth } from "../../auth.js";
-import { db } from "../../db/drizzle.js";
 import { usersTable } from "../../db/schema.js";
+import type { ThisAppEnv } from "../../factory.js";
 import { UpdatedDetails, UserResponse } from "./schema.js";
 
-export const userModule = new Hono().use(jwtAuth).use(exposeToken);
+export const userModule = new Hono<ThisAppEnv>().use(jwtAuth).use(exposeToken);
 
 userModule.get("/", async (c) => {
+	const db = c.get("db");
 	const self = c.get("jwtPayload");
 	const user = await db.query.usersTable.findFirst({
 		where: eq(usersTable.id, self.id),
@@ -26,6 +27,7 @@ userModule.get("/", async (c) => {
 });
 
 userModule.put("/", vValidator("json", UpdatedDetails), async (c) => {
+	const db = c.get("db");
 	const self = c.get("jwtPayload");
 	const user = await db.query.usersTable.findFirst({
 		where: eq(usersTable.id, self.id),

@@ -1,7 +1,6 @@
 import { vValidator } from "@hono/valibot-validator";
 import slugify from "@sindresorhus/slugify";
 import {
-	aliasedTable,
 	and,
 	countDistinct,
 	desc,
@@ -10,12 +9,14 @@ import {
 	getTableColumns,
 	sql,
 } from "drizzle-orm";
+import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import type { SQLiteColumn } from "drizzle-orm/sqlite-core";
 import { Hono } from "hono";
 import { decode } from "hono/jwt";
 import { type InferOutput, array, parse, string } from "valibot";
+
 import { JwtClaims, exposeToken, jwtAuth } from "../../auth.js";
-import { db } from "../../db/drizzle.js";
+import type * as schema from "../../db/schema.js";
 import {
 	articleFavoriteTable,
 	articleTagTable,
@@ -24,6 +25,7 @@ import {
 	userFollowTable,
 	usersTable,
 } from "../../db/schema.js";
+import type { ThisAppEnv } from "../../factory.js";
 import { amIFollowing } from "./am-i-following.js";
 import {
 	ArticleToCreate,
@@ -32,14 +34,20 @@ import {
 	UpdatedArticle,
 } from "./schema.js";
 
-export const articlesModule = new Hono();
+export const articlesModule = new Hono<ThisAppEnv>();
 
 const TagList = array(string());
 
+/** Subquery to include the `favorited` field on an article. */
 function isFavorited({
+	db,
 	articleSlug,
 	me,
-}: { articleSlug: SQLiteColumn; me: number }) {
+}: {
+	db: LibSQLDatabase<typeof schema>;
+	articleSlug: SQLiteColumn;
+	me: number;
+}) {
 	return exists(
 		db
 			.select({ exists: sql`1` })
@@ -54,6 +62,7 @@ function isFavorited({
 }
 
 async function findArticle(
+	db: LibSQLDatabase<typeof schema>,
 	slug: string,
 	self: InferOutput<typeof JwtClaims> | null,
 ) {
@@ -62,7 +71,7 @@ async function findArticle(
 			...getTableColumns(articlesTable),
 			favorited: (self === null
 				? sql<number>`0`
-				: isFavorited({ articleSlug: articlesTable.slug, me: self.id })
+				: isFavorited({ db, articleSlug: articlesTable.slug, me: self.id })
 			).mapWith(Boolean),
 			favoritesCount: countDistinct(articleFavoriteTable.userId).as(
 				"favoritesCount",
@@ -77,7 +86,7 @@ async function findArticle(
 				image: usersTable.image,
 				following: (self === null
 					? sql<number>`0`
-					: amIFollowing({ them: articlesTable.authorId, me: self.id })
+					: amIFollowing({ db, them: articlesTable.authorId, me: self.id })
 				).mapWith(Boolean),
 			},
 		})
@@ -98,6 +107,7 @@ async function findArticle(
 }
 
 articlesModule.get("/", exposeToken, async (c) => {
+	const db = c.get("db");
 	const token = c.get("token");
 	const self =
 		token !== undefined ? parse(JwtClaims, decode(token).payload) : null;
@@ -130,13 +140,12 @@ articlesModule.get("/", exposeToken, async (c) => {
 				.as("slugsWithFavoritedFilter")
 		: null;
 
-	const favoritingUsersTable = aliasedTable(usersTable, "favoritingUsersTable");
 	const articles = await db
 		.select({
 			...desiredColumns,
 			favorited: (self === null
 				? sql<number>`0`
-				: isFavorited({ articleSlug: articlesTable.slug, me: self.id })
+				: isFavorited({ db, articleSlug: articlesTable.slug, me: self.id })
 			).mapWith(Boolean),
 			favoritesCount: countDistinct(articleFavoriteTable.userId).as(
 				"favoritesCount",
@@ -151,7 +160,7 @@ articlesModule.get("/", exposeToken, async (c) => {
 				image: usersTable.image,
 				following: (self === null
 					? sql<number>`0`
-					: amIFollowing({ them: articlesTable.authorId, me: self.id })
+					: amIFollowing({ db, them: articlesTable.authorId, me: self.id })
 				).mapWith(Boolean),
 			},
 		})
@@ -200,6 +209,7 @@ articlesModule.get("/", exposeToken, async (c) => {
 });
 
 articlesModule.get("/feed", jwtAuth, async (c) => {
+	const db = c.get("db");
 	const self = c.get("jwtPayload");
 
 	const limit = Number(c.req.query("limit") ?? 20);
@@ -216,7 +226,7 @@ articlesModule.get("/feed", jwtAuth, async (c) => {
 			...desiredColumns,
 			favorited: (self === null
 				? sql<number>`0`
-				: isFavorited({ articleSlug: articlesTable.slug, me: self.id })
+				: isFavorited({ db, articleSlug: articlesTable.slug, me: self.id })
 			).mapWith(Boolean),
 			favoritesCount: countDistinct(articleFavoriteTable.userId).as(
 				"favoritesCount",
@@ -231,7 +241,7 @@ articlesModule.get("/feed", jwtAuth, async (c) => {
 				image: usersTable.image,
 				following: (self === null
 					? sql<number>`0`
-					: amIFollowing({ them: articlesTable.authorId, me: self.id })
+					: amIFollowing({ db, them: articlesTable.authorId, me: self.id })
 				).mapWith(Boolean),
 			},
 		})
@@ -264,13 +274,14 @@ articlesModule.get("/feed", jwtAuth, async (c) => {
 });
 
 articlesModule.get("/:slug", exposeToken, async (c) => {
+	const db = c.get("db");
 	const token = c.get("token");
 	const self =
 		token !== undefined ? parse(JwtClaims, decode(token).payload) : null;
 
 	const slug = c.req.param("slug");
 
-	const article = await findArticle(slug, self);
+	const article = await findArticle(db, slug, self);
 
 	if (article === undefined) {
 		return c.notFound();
@@ -284,6 +295,7 @@ articlesModule.post(
 	jwtAuth,
 	vValidator("json", ArticleToCreate),
 	async (c) => {
+		const db = c.get("db");
 		const self = c.get("jwtPayload");
 
 		const { tagList, ...articlePayload } = c.req.valid("json").article;
@@ -302,7 +314,7 @@ articlesModule.post(
 				.values(tagList.map((tag) => ({ articleSlug: slug, tag })));
 		}
 
-		const article = await findArticle(slug, self);
+		const article = await findArticle(db, slug, self);
 
 		return c.json(parse(SingleArticleResponse, { article }));
 	},
@@ -313,6 +325,7 @@ articlesModule.put(
 	jwtAuth,
 	vValidator("json", UpdatedArticle),
 	async (c) => {
+		const db = c.get("db");
 		const self = c.get("jwtPayload");
 
 		let slug = c.req.param("slug");
@@ -344,13 +357,14 @@ articlesModule.put(
 			slug = newSlug;
 		}
 
-		const article = await findArticle(slug, self);
+		const article = await findArticle(db, slug, self);
 
 		return c.json(parse(SingleArticleResponse, { article }));
 	},
 );
 
 articlesModule.delete("/:slug", jwtAuth, async (c) => {
+	const db = c.get("db");
 	const self = c.get("jwtPayload");
 
 	const slug = c.req.param("slug");
@@ -373,6 +387,7 @@ articlesModule.delete("/:slug", jwtAuth, async (c) => {
 });
 
 articlesModule.post("/:slug/favorite", jwtAuth, async (c) => {
+	const db = c.get("db");
 	const self = c.get("jwtPayload");
 
 	const slug = c.req.param("slug");
@@ -394,12 +409,13 @@ articlesModule.post("/:slug/favorite", jwtAuth, async (c) => {
 		})
 		.onConflictDoNothing();
 
-	const updatedArticle = await findArticle(slug, self);
+	const updatedArticle = await findArticle(db, slug, self);
 
 	return c.json(parse(SingleArticleResponse, { article: updatedArticle }));
 });
 
 articlesModule.delete("/:slug/favorite", jwtAuth, async (c) => {
+	const db = c.get("db");
 	const self = c.get("jwtPayload");
 
 	const slug = c.req.param("slug");
@@ -422,7 +438,7 @@ articlesModule.delete("/:slug/favorite", jwtAuth, async (c) => {
 			),
 		);
 
-	const updatedArticle = await findArticle(slug, self);
+	const updatedArticle = await findArticle(db, slug, self);
 
 	return c.json(parse(SingleArticleResponse, { article: updatedArticle }));
 });

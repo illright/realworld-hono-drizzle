@@ -1,14 +1,16 @@
 import "dotenv/config";
+import slugify from "@sindresorhus/slugify";
 import { copycat } from "@snaplet/copycat";
 import bcrypt from "bcryptjs";
+import { drizzle } from "drizzle-orm/libsql";
 
-import slugify from "@sindresorhus/slugify";
-import { db } from "../src/db/drizzle.js";
 import * as schema from "../src/db/schema.js";
 
 if (!process.env.DB_FILE_NAME) {
 	throw new Error("Env DB_FILE_NAME is not defined, see .env.example");
 }
+
+export const db = drizzle(process.env.DB_FILE_NAME, { schema });
 
 function createUser(seedPhrase: string) {
 	return {

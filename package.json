@@ -2,7 +2,7 @@
 	"name": "realworld-hono-drizzle",
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch src/index.ts",
+		"dev": "tsx watch src/cli.ts",
 		"check": "biome check",
 		"typecheck": "tsc --noEmit",
 		"prepare": "husky"

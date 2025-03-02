@@ -1,21 +1,22 @@
-import type { MiddlewareHandler } from "hono";
 import { createMiddleware } from "hono/factory";
 import { jwt } from "hono/jwt";
 import { type InferOutput, number, object } from "valibot";
 
-if (!process.env.JWT_SECRET) {
-	throw new Error("Env JWT_SECRET is not defined, see .env.example");
-}
+import type { ThisAppEnv } from "./factory.js";
 
 export const JwtClaims = object({
 	id: number(),
 });
 
-export const jwtAuth = jwt({
-	secret: process.env.JWT_SECRET,
-}) as MiddlewareHandler<{
+export const jwtAuth = createMiddleware<{
 	Variables: { jwtPayload: InferOutput<typeof JwtClaims> };
-}>;
+	Bindings: ThisAppEnv["Bindings"];
+}>((c, next) => {
+	const jwtMiddleware = jwt({
+		secret: c.env.JWT_SECRET,
+	});
+	return jwtMiddleware(c, next);
+});
 
 export const exposeToken = createMiddleware<{
 	Variables: {

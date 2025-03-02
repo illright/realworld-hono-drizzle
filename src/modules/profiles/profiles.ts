@@ -4,13 +4,14 @@ import { parse } from "valibot";
 
 import { decode } from "hono/jwt";
 import { JwtClaims, exposeToken, jwtAuth } from "../../auth.js";
-import { db } from "../../db/drizzle.js";
 import { userFollowTable, usersTable } from "../../db/schema.js";
+import type { ThisAppEnv } from "../../factory.js";
 import { ProfileResponse } from "./schema.js";
 
-export const profilesModule = new Hono();
+export const profilesModule = new Hono<ThisAppEnv>();
 
 profilesModule.get("/:username", exposeToken, async (c) => {
+	const db = c.get("db");
 	const token = c.get("token");
 	const self =
 		token !== undefined ? parse(JwtClaims, decode(token).payload) : null;
@@ -37,6 +38,7 @@ profilesModule.get("/:username", exposeToken, async (c) => {
 });
 
 profilesModule.post("/:username/follow", jwtAuth, async (c) => {
+	const db = c.get("db");
 	const self = c.get("jwtPayload");
 	const userToFollow = await db.query.usersTable.findFirst({
 		where: eq(usersTable.username, c.req.param("username")),
@@ -57,6 +59,7 @@ profilesModule.post("/:username/follow", jwtAuth, async (c) => {
 });
 
 profilesModule.delete("/:username/follow", jwtAuth, async (c) => {
+	const db = c.get("db");
 	const self = c.get("jwtPayload");
 	const userToUnfollow = await db.query.usersTable.findFirst({
 		where: eq(usersTable.username, c.req.param("username")),

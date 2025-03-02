@@ -1,11 +1,16 @@
 import { and, eq, exists, sql } from "drizzle-orm";
+import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import type { SQLiteColumn } from "drizzle-orm/sqlite-core";
 
-import { db } from "../../db/drizzle.js";
+import type * as schema from "../../db/schema.js";
 import { userFollowTable } from "../../db/schema.js";
 
 /** Subquery to include the `following` field on a user object. */
-export function amIFollowing({ me, them }: { them: SQLiteColumn; me: number }) {
+export function amIFollowing({
+	db,
+	me,
+	them,
+}: { db: LibSQLDatabase<typeof schema>; them: SQLiteColumn; me: number }) {
 	return exists(
 		db
 			.select({ exists: sql`1` })
