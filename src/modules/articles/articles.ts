@@ -356,3 +356,58 @@ articlesModule.delete("/:slug", jwtAuth, async (c) => {
 
 	return new Response(null, { status: 204 });
 });
+
+articlesModule.post("/:slug/favorite", jwtAuth, async (c) => {
+	const self = c.get("jwtPayload");
+
+	const slug = c.req.param("slug");
+
+	const [articleExists] = await db
+		.select({ exists: sql`1` })
+		.from(articlesTable)
+		.where(eq(articlesTable.slug, slug));
+
+	if (articleExists === undefined) {
+		return c.notFound();
+	}
+
+	await db
+		.insert(articleFavoriteTable)
+		.values({
+			articleSlug: slug,
+			userId: self.id,
+		})
+		.onConflictDoNothing();
+
+	const updatedArticle = await findArticle(slug, self);
+
+	return c.json(parse(SingleArticleResponse, { article: updatedArticle }));
+});
+
+articlesModule.delete("/:slug/favorite", jwtAuth, async (c) => {
+	const self = c.get("jwtPayload");
+
+	const slug = c.req.param("slug");
+
+	const [articleExists] = await db
+		.select({ exists: sql`1` })
+		.from(articlesTable)
+		.where(eq(articlesTable.slug, slug));
+
+	if (articleExists === undefined) {
+		return c.notFound();
+	}
+
+	await db
+		.delete(articleFavoriteTable)
+		.where(
+			and(
+				eq(articleFavoriteTable.articleSlug, slug),
+				eq(articleFavoriteTable.userId, self.id),
+			),
+		);
+
+	const updatedArticle = await findArticle(slug, self);
+
+	return c.json(parse(SingleArticleResponse, { article: updatedArticle }));
+});
