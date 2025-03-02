@@ -3,7 +3,7 @@ import slugify from "@sindresorhus/slugify";
 import {
 	aliasedTable,
 	and,
-	count,
+	countDistinct,
 	desc,
 	eq,
 	exists,
@@ -64,7 +64,9 @@ async function findArticle(
 				? sql<number>`0`
 				: isFavorited({ articleSlug: articlesTable.slug, me: self.id })
 			).mapWith(Boolean),
-			favoritesCount: count(articleFavoriteTable.userId).as("favoritesCount"),
+			favoritesCount: countDistinct(articleFavoriteTable.userId).as(
+				"favoritesCount",
+			),
 			tagList:
 				sql<string>`json_group_array(DISTINCT ${articleTagTable.tag}) filter (where ${articleTagTable.tag} is not null)`.mapWith(
 					(tagList) => parse(TagList, JSON.parse(tagList)),
@@ -119,6 +121,14 @@ articlesModule.get("/", exposeToken, async (c) => {
 				.where(eq(articleTagTable.tag, tagFilter))
 				.as("slugsWithTagFilter")
 		: null;
+	const slugsWithFavoritedFilter = favoritedFilter
+		? db
+				.select({ slug: articleFavoriteTable.articleSlug })
+				.from(articleFavoriteTable)
+				.innerJoin(usersTable, eq(articleFavoriteTable.userId, usersTable.id))
+				.where(eq(usersTable.username, favoritedFilter))
+				.as("slugsWithFavoritedFilter")
+		: null;
 
 	const favoritingUsersTable = aliasedTable(usersTable, "favoritingUsersTable");
 	const articles = await db
@@ -128,7 +138,9 @@ articlesModule.get("/", exposeToken, async (c) => {
 				? sql<number>`0`
 				: isFavorited({ articleSlug: articlesTable.slug, me: self.id })
 			).mapWith(Boolean),
-			favoritesCount: count(articleFavoriteTable.userId).as("favoritesCount"),
+			favoritesCount: countDistinct(articleFavoriteTable.userId).as(
+				"favoritesCount",
+			),
 			tagList:
 				sql<string>`json_group_array(DISTINCT ${articleTagTable.tag}) filter (where ${articleTagTable.tag} is not null)`.mapWith(
 					(tagList) => parse(TagList, JSON.parse(tagList)),
@@ -153,10 +165,6 @@ articlesModule.get("/", exposeToken, async (c) => {
 			eq(articlesTable.slug, articleTagTable.articleSlug),
 		)
 		.innerJoin(usersTable, eq(articlesTable.authorId, usersTable.id))
-		.leftJoin(
-			favoritingUsersTable,
-			eq(favoritingUsersTable.id, articleFavoriteTable.userId),
-		)
 		.where(
 			and(
 				slugsWithTagFilter
@@ -168,8 +176,13 @@ articlesModule.get("/", exposeToken, async (c) => {
 						)
 					: undefined,
 				authorFilter ? eq(usersTable.username, authorFilter) : undefined,
-				favoritedFilter
-					? eq(favoritingUsersTable.username, favoritedFilter)
+				slugsWithFavoritedFilter
+					? exists(
+							db
+								.select()
+								.from(slugsWithFavoritedFilter)
+								.where(eq(slugsWithFavoritedFilter.slug, articlesTable.slug)),
+						)
 					: undefined,
 			),
 		)
@@ -205,7 +218,9 @@ articlesModule.get("/feed", jwtAuth, async (c) => {
 				? sql<number>`0`
 				: isFavorited({ articleSlug: articlesTable.slug, me: self.id })
 			).mapWith(Boolean),
-			favoritesCount: count(articleFavoriteTable.userId).as("favoritesCount"),
+			favoritesCount: countDistinct(articleFavoriteTable.userId).as(
+				"favoritesCount",
+			),
 			tagList:
 				sql<string>`json_group_array(DISTINCT ${articleTagTable.tag}) filter (where ${articleTagTable.tag} is not null)`.mapWith(
 					(tagList) => parse(TagList, JSON.parse(tagList)),
