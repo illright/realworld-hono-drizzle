@@ -34,10 +34,10 @@ export const userFollowTable = sqliteTable(
 	{
 		followerId: int()
 			.notNull()
-			.references(() => usersTable.id),
+			.references(() => usersTable.id, { onDelete: "cascade" }),
 		followedId: int()
 			.notNull()
-			.references(() => usersTable.id),
+			.references(() => usersTable.id, { onDelete: "cascade" }),
 	},
 	(t) => [primaryKey({ columns: [t.followerId, t.followedId] })],
 );
@@ -74,10 +74,13 @@ export const articleTagTable = sqliteTable(
 	{
 		articleSlug: text()
 			.notNull()
-			.references(() => articlesTable.slug),
+			.references(() => articlesTable.slug, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
 		tag: text()
 			.notNull()
-			.references(() => tagsTable.tag),
+			.references(() => tagsTable.tag, { onDelete: "cascade" }),
 	},
 	(t) => [primaryKey({ columns: [t.articleSlug, t.tag] })],
 );
@@ -87,10 +90,13 @@ export const articleFavoriteTable = sqliteTable(
 	{
 		articleSlug: text()
 			.notNull()
-			.references(() => articlesTable.slug),
+			.references(() => articlesTable.slug, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
 		userId: int()
 			.notNull()
-			.references(() => usersTable.id),
+			.references(() => usersTable.id, { onDelete: "cascade" }),
 	},
 	(t) => [primaryKey({ columns: [t.articleSlug, t.userId] })],
 );
