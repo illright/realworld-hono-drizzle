@@ -4,6 +4,7 @@
 	"scripts": {
 		"dev": "tsx watch src/index.ts",
 		"check": "biome check",
+		"typecheck": "tsc --noEmit",
 		"prepare": "husky"
 	},
 	"dependencies": {
@@ -11,20 +12,23 @@
 		"@hono/valibot-validator": "^0.5.2",
 		"@libsql/client": "^0.14.0",
 		"@sindresorhus/slugify": "^2.2.1",
-		"bcryptjs": "^3.0.0",
+		"bcryptjs": "^3.0.2",
 		"dotenv": "^16.4.7",
-		"drizzle-orm": "^0.39.3",
-		"hono": "^4.7.1",
-		"valibot": "1.0.0-rc.0"
+		"drizzle-orm": "^0.40.0",
+		"hono": "^4.7.2",
+		"valibot": "1.0.0-rc.3"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@snaplet/copycat": "^6.0.0",
-		"@types/node": "^20.11.17",
-		"drizzle-kit": "^0.30.4",
+		"@types/node": "^20.17.22",
+		"drizzle-kit": "^0.30.5",
 		"husky": "^9.1.7",
-		"tsx": "^4.19.2",
+		"tsx": "^4.19.3",
 		"typescript": "^5.8.2"
+	},
+	"engines": {
+		"node": ">=20"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": ["@biomejs/biome", "esbuild"]
