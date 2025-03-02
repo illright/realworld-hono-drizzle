@@ -23,6 +23,14 @@ const Article = object({
 	author: Profile,
 });
 
+const Comment = object({
+	id: number(),
+	createdAt: string(),
+	updatedAt: string(),
+	body: string(),
+	author: Profile,
+});
+
 export const SingleArticleResponse = object({
 	article: Article,
 });
@@ -49,4 +57,18 @@ export const UpdatedArticle = object({
 			body: string(),
 		}),
 	),
+});
+
+export const SingleCommentResponse = object({
+	comment: Comment,
+});
+
+export const MultipleCommentsResponse = object({
+	comments: array(Comment),
+});
+
+export const CommentToCreate = object({
+	comment: object({
+		body: string(),
+	}),
 });

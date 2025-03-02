@@ -69,6 +69,22 @@ export const articlesTable = sqliteTable("articles_table", {
 		.references(() => usersTable.id, { onDelete: "cascade" }),
 });
 
+export const commentsTable = sqliteTable("comments_table", {
+	id: int().primaryKey({ autoIncrement: true }),
+	createdAt: date().notNull().default(sql`(CURRENT_TIMESTAMP)`),
+	updatedAt: date().notNull().default(sql`(CURRENT_TIMESTAMP)`),
+	body: text().notNull(),
+	articleSlug: text()
+		.notNull()
+		.references(() => articlesTable.slug, {
+			onDelete: "cascade",
+			onUpdate: "cascade",
+		}),
+	authorId: int()
+		.notNull()
+		.references(() => usersTable.id, { onDelete: "cascade" }),
+});
+
 export const articleTagTable = sqliteTable(
 	"article_tag_table",
 	{
@@ -107,6 +123,7 @@ export const articleRelations = relations(articlesTable, ({ one, many }) => ({
 		references: [usersTable.id],
 	}),
 	tagList: many(articleTagTable),
+	commentRelations: many(commentsTable),
 }));
 
 export const tagRelations = relations(tagsTable, ({ many }) => ({
@@ -121,5 +138,12 @@ export const articleTagRelations = relations(articleTagTable, ({ one }) => ({
 	tag: one(tagsTable, {
 		fields: [articleTagTable.tag],
 		references: [tagsTable.tag],
+	}),
+}));
+
+export const commentRelations = relations(commentsTable, ({ one }) => ({
+	article: one(articlesTable, {
+		fields: [commentsTable.articleSlug],
+		references: [articlesTable.slug],
 	}),
 }));

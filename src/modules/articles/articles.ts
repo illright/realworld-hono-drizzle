@@ -24,6 +24,7 @@ import {
 	userFollowTable,
 	usersTable,
 } from "../../db/schema.js";
+import { amIFollowing } from "./am-i-following.js";
 import {
 	ArticleToCreate,
 	MultipleArticlesResponse,
@@ -34,20 +35,6 @@ import {
 export const articlesModule = new Hono();
 
 const TagList = array(string());
-
-function amIFollowing({ me, them }: { them: SQLiteColumn; me: number }) {
-	return exists(
-		db
-			.select({ exists: sql`1` })
-			.from(userFollowTable)
-			.where(
-				and(
-					eq(userFollowTable.followerId, me),
-					eq(userFollowTable.followedId, them),
-				),
-			),
-	);
-}
 
 function isFavorited({
 	articleSlug,
