@@ -1,8 +1,29 @@
 {
 	"name": "realworld-hono-drizzle",
+	"description": "A RealWorld backend built with Hono and Drizzle",
+	"version": "1.0.0",
 	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	},
+	"bin": "./dist/cli.js",
+	"files": ["src", "dist", "LICENSE", "README.md"],
+	"license": "ISC",
+	"repository": "github:illright/realworld-hono-drizzle",
+	"bugs": "https://github.com/illright/realworld-hono-drizzle/issues",
+	"keywords": ["realworld", "conduit"],
 	"scripts": {
 		"dev": "tsx watch src/cli.ts",
+		"build": "tsup",
 		"check": "biome check",
 		"typecheck": "tsc --noEmit",
 		"prepare": "husky"
@@ -24,11 +45,9 @@
 		"@types/node": "^20.17.22",
 		"drizzle-kit": "^0.30.5",
 		"husky": "^9.1.7",
+		"tsup": "^8.4.0",
 		"tsx": "^4.19.3",
 		"typescript": "^5.8.2"
-	},
-	"engines": {
-		"node": ">=20"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": ["@biomejs/biome", "esbuild"]
