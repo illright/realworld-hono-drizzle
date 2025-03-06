@@ -12,7 +12,7 @@ if (!process.env.DATABASE_URL) {
 
 export const db = drizzle(process.env.DATABASE_URL, { schema });
 
-function createUser(seedPhrase: string) {
+function makeUser(seedPhrase: string) {
 	return {
 		email: copycat.email(seedPhrase),
 		username: copycat.username(seedPhrase),
@@ -32,20 +32,20 @@ function makeArticle(seedPhrase: string) {
 	};
 }
 
-function hashPassword(user: ReturnType<typeof createUser>) {
+function hashPassword(user: ReturnType<typeof makeUser>) {
 	const { password, ...userRest } = user;
 	return { ...userRest, passwordHash: bcrypt.hashSync(password, 10) };
 }
 
-await db.delete(schema.articleFavoriteTable);
-await db.delete(schema.articleTagTable);
-await db.delete(schema.tagsTable);
-await db.delete(schema.articlesTable);
-await db.delete(schema.usersTable);
+await Promise.all([
+	db.delete(schema.tagsTable),
+	db.delete(schema.articlesTable),
+	db.delete(schema.usersTable),
+]);
 
-const user1 = createUser("user1");
-const user2 = createUser("user2");
-const user3 = createUser("user3");
+const user1 = makeUser("user1");
+const user2 = makeUser("user2");
+const user3 = makeUser("user3");
 const [{ id: user1Id }, { id: user2Id }, { id: user3Id }] = (await db
 	.insert(schema.usersTable)
 	.values([user1, user2, user3].map(hashPassword))
@@ -61,6 +61,13 @@ await db.insert(schema.articlesTable).values([
 	{ ...makeArticle("article12"), authorId: user1Id },
 	{ ...makeArticle("article2"), authorId: user2Id },
 	{ ...makeArticle("article3"), authorId: user3Id },
+]);
+
+await db.insert(schema.commentsTable).values([
+	{ articleSlug: makeArticle("article1").slug, body: copycat.paragraph("comment1"), authorId: user1Id },
+	{ articleSlug: makeArticle("article1").slug, body: copycat.paragraph("comment2"), authorId: user2Id },
+	{ articleSlug: makeArticle("article2").slug, body: copycat.paragraph("comment3"), authorId: user1Id },
+	{ articleSlug: makeArticle("article2").slug, body: copycat.paragraph("comment4"), authorId: user3Id },
 ]);
 
 await db
@@ -86,4 +93,12 @@ await db.insert(schema.articleFavoriteTable).values([
 	{ articleSlug: makeArticle("article2").slug, userId: user3Id },
 ]);
 
-console.log("Seed completed!");
+await db.insert(schema.userFollowTable).values([
+	{ followerId: user1Id, followedId: user2Id },
+	{ followerId: user1Id, followedId: user3Id },
+	{ followerId: user2Id, followedId: user1Id },
+	{ followerId: user2Id, followedId: user3Id },
+	{ followerId: user3Id, followedId: user1Id },
+]);
+
+console.log("Seed completed! Run `pnpm exec drizzle-kit studio` to view the data.");

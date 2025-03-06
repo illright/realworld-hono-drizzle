@@ -23,6 +23,7 @@
 	"keywords": ["realworld", "conduit"],
 	"scripts": {
 		"dev": "tsx watch src/cli.ts",
+		"seed": "tsx scripts/seed.ts",
 		"build": "tsup",
 		"check": "biome check",
 		"typecheck": "tsc --noEmit",
