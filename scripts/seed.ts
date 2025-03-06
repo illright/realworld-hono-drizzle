@@ -64,10 +64,26 @@ await db.insert(schema.articlesTable).values([
 ]);
 
 await db.insert(schema.commentsTable).values([
-	{ articleSlug: makeArticle("article1").slug, body: copycat.paragraph("comment1"), authorId: user1Id },
-	{ articleSlug: makeArticle("article1").slug, body: copycat.paragraph("comment2"), authorId: user2Id },
-	{ articleSlug: makeArticle("article2").slug, body: copycat.paragraph("comment3"), authorId: user1Id },
-	{ articleSlug: makeArticle("article2").slug, body: copycat.paragraph("comment4"), authorId: user3Id },
+	{
+		articleSlug: makeArticle("article1").slug,
+		body: copycat.paragraph("comment1"),
+		authorId: user1Id,
+	},
+	{
+		articleSlug: makeArticle("article1").slug,
+		body: copycat.paragraph("comment2"),
+		authorId: user2Id,
+	},
+	{
+		articleSlug: makeArticle("article2").slug,
+		body: copycat.paragraph("comment3"),
+		authorId: user1Id,
+	},
+	{
+		articleSlug: makeArticle("article2").slug,
+		body: copycat.paragraph("comment4"),
+		authorId: user3Id,
+	},
 ]);
 
 await db
@@ -101,4 +117,6 @@ await db.insert(schema.userFollowTable).values([
 	{ followerId: user3Id, followedId: user1Id },
 ]);
 
-console.log("Seed completed! Run `pnpm exec drizzle-kit studio` to view the data.");
+console.log(
+	"Seed completed! Run `pnpm exec drizzle-kit studio` to view the data.",
+);
