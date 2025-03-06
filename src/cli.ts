@@ -1,6 +1,7 @@
+#!/bin/env node
 import "dotenv/config";
+import { randomBytes } from "node:crypto";
 import { serve } from "@hono/node-server";
-
 import {
 	number,
 	object,
@@ -10,11 +11,12 @@ import {
 	string,
 	transform,
 } from "valibot";
+
 import { factory } from "./factory.js";
 
 const Environment = object({
-	DATABASE_URL: string(),
-	JWT_SECRET: string(),
+	DATABASE_URL: optional(string(), "file:local.db"),
+	JWT_SECRET: optional(string(), randomBytes(64).toString("base64url")),
 	PORT: pipe(optional(string(), "3000"), transform(Number.parseInt), number()),
 });
 const env = parse(Environment, process.env);
