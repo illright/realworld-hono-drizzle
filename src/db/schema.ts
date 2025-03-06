@@ -20,7 +20,7 @@ const date = customType<{
 	},
 });
 
-export const usersTable = sqliteTable("users_table", {
+export const usersTable = sqliteTable("users", {
 	id: int().primaryKey({ autoIncrement: true }),
 	email: text().notNull().unique(),
 	username: text().notNull().unique(),
@@ -30,7 +30,7 @@ export const usersTable = sqliteTable("users_table", {
 });
 
 export const userFollowTable = sqliteTable(
-	"user_follow_table",
+	"user_follow",
 	{
 		followerId: int()
 			.notNull()
@@ -53,11 +53,11 @@ export const userFollowRelations = relations(userFollowTable, ({ one }) => ({
 	}),
 }));
 
-export const tagsTable = sqliteTable("tags_table", {
+export const tagsTable = sqliteTable("tags", {
 	tag: text().notNull().unique(),
 });
 
-export const articlesTable = sqliteTable("articles_table", {
+export const articlesTable = sqliteTable("articles", {
 	slug: text().primaryKey(),
 	title: text().notNull(),
 	description: text().notNull(),
@@ -69,7 +69,7 @@ export const articlesTable = sqliteTable("articles_table", {
 		.references(() => usersTable.id, { onDelete: "cascade" }),
 });
 
-export const commentsTable = sqliteTable("comments_table", {
+export const commentsTable = sqliteTable("comments", {
 	id: int().primaryKey({ autoIncrement: true }),
 	createdAt: date().notNull().default(sql`(CURRENT_TIMESTAMP)`),
 	updatedAt: date().notNull().default(sql`(CURRENT_TIMESTAMP)`),
@@ -86,7 +86,7 @@ export const commentsTable = sqliteTable("comments_table", {
 });
 
 export const articleTagTable = sqliteTable(
-	"article_tag_table",
+	"article_tag",
 	{
 		articleSlug: text()
 			.notNull()
@@ -102,7 +102,7 @@ export const articleTagTable = sqliteTable(
 );
 
 export const articleFavoriteTable = sqliteTable(
-	"article_favorite_table",
+	"article_favorite",
 	{
 		articleSlug: text()
 			.notNull()
