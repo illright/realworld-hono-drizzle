@@ -1,7 +1,7 @@
 {
 	"name": "realworld-hono-drizzle",
 	"description": "A RealWorld backend built with Hono and Drizzle",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"type": "module",
 	"exports": {
 		".": {

@@ -1,4 +1,4 @@
-#!/bin/env node
+#!/usr/bin/env node
 import "dotenv/config";
 import { randomBytes } from "node:crypto";
 import { serve } from "@hono/node-server";
