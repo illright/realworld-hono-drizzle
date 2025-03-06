@@ -6,11 +6,11 @@ import { drizzle } from "drizzle-orm/libsql";
 
 import * as schema from "../src/db/schema.js";
 
-if (!process.env.DB_FILE_NAME) {
-	throw new Error("Env DB_FILE_NAME is not defined, see .env.example");
+if (!process.env.DATABASE_URL) {
+	throw new Error("Env DATABASE_URL is not defined, see .env.example");
 }
 
-export const db = drizzle(process.env.DB_FILE_NAME, { schema });
+export const db = drizzle(process.env.DATABASE_URL, { schema });
 
 function createUser(seedPhrase: string) {
 	return {

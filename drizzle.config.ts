@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
 
-if (!process.env.DB_FILE_NAME) {
-	throw new Error("Env DB_FILE_NAME is not defined, see .env.example");
+if (!process.env.DATABASE_URL) {
+	throw new Error("Env DATABASE_URL is not defined, see .env.example");
 }
 
 export default defineConfig({
@@ -10,6 +10,6 @@ export default defineConfig({
 	schema: "./src/db/schema.ts",
 	dialect: "sqlite",
 	dbCredentials: {
-		url: process.env.DB_FILE_NAME,
+		url: process.env.DATABASE_URL,
 	},
 });

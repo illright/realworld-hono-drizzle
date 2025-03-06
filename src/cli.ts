@@ -13,7 +13,7 @@ import {
 import { factory } from "./factory.js";
 
 const Environment = object({
-	DB_FILE_NAME: string(),
+	DATABASE_URL: string(),
 	JWT_SECRET: string(),
 	PORT: pipe(optional(string(), "3000"), transform(Number.parseInt), number()),
 });

@@ -12,7 +12,7 @@ import { usersModule } from "./modules/users/users.js";
 export interface ThisAppEnv {
 	Variables: { db: LibSQLDatabase<typeof schema> };
 	Bindings: {
-		DB_FILE_NAME: string;
+		DATABASE_URL: string;
 		JWT_SECRET: string;
 	};
 }
@@ -20,7 +20,7 @@ export interface ThisAppEnv {
 export const factory = createFactory<ThisAppEnv>({
 	initApp(app) {
 		app.use(async (c, next) => {
-			const db = drizzle(c.env.DB_FILE_NAME, { schema });
+			const db = drizzle(c.env.DATABASE_URL, { schema });
 			c.set("db", db);
 			await next();
 		});
