@@ -62,11 +62,29 @@ function handleApiRequest(req) {
 }
 ```
 
+The app expects the database file to be pre-populated with the necessary tables. You can call the `applyMigrations` function to do this:
+
+```js
+import { applyMigrations } from 'realworld-hono-drizzle';
+
+await applyMigrations('file:local.db');
+```
+
+You can also seed the database with some initial data:
+
+```js
+import { seed } from 'realworld-hono-drizzle';
+
+await seed('file:local.db');
+```
+
 ## From source
 
 You should have Node.js >= 20 and [pnpm](https://pnpm.io/) installed on your machine.
 
-Clone this repository, `cd` into it, then run `pnpm install`, then `pnpm dev`.
+Clone this repository, `cd` into it, then run `pnpm install` to install the dependencies.
+
+To start the server with an empty database, run `pnpm dev` directly. If you want to add some data, run `pnpm seed` first and then start the server with `pnpm dev`.
 
 # Configuration
 
