@@ -3,14 +3,21 @@ import slugify from "@sindresorhus/slugify";
 import { copycat } from "@snaplet/copycat";
 import bcrypt from "bcryptjs";
 import { drizzle } from "drizzle-orm/libsql";
+import { migrate } from "drizzle-orm/libsql/migrator";
 
+import drizzleConfig from "../drizzle.config.js";
 import * as schema from "../src/db/schema.js";
 
 if (!process.env.DATABASE_URL) {
 	throw new Error("Env DATABASE_URL is not defined, see .env.example");
 }
 
+if (drizzleConfig.out === undefined) {
+	throw new Error("Specify the 'out' field in drizzle.config.ts");
+}
+
 export const db = drizzle(process.env.DATABASE_URL, { schema });
+await migrate(db, { migrationsFolder: drizzleConfig.out });
 
 function makeUser(seedPhrase: string) {
 	return {

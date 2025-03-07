@@ -10,5 +10,8 @@ export default defineConfig([
 	{
 		entryPoints: ["src/cli.ts"],
 		sourcemap: true,
+		define: {
+			"import.meta.dirname": "__dirname",
+		},
 	},
 ]);

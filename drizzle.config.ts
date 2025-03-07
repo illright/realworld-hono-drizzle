@@ -6,7 +6,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default defineConfig({
-	out: "./drizzle",
+	out: "./src/db/migrations",
 	schema: "./src/db/schema.ts",
 	dialect: "sqlite",
 	dbCredentials: {

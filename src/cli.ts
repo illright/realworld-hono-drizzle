@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import "dotenv/config";
 import { randomBytes } from "node:crypto";
+import { join } from "node:path";
 import { serve } from "@hono/node-server";
+import { drizzle } from "drizzle-orm/libsql";
+import { migrate } from "drizzle-orm/libsql/migrator";
 import {
 	number,
 	object,
@@ -25,9 +28,13 @@ const app = factory.createApp();
 
 console.log(`Server is running on http://localhost:${env.PORT}`);
 
-serve({
-	fetch(request, httpBindings) {
-		return app.fetch(request, { ...env, ...httpBindings });
-	},
-	port: env.PORT,
-});
+migrate(drizzle(env.DATABASE_URL), {
+	migrationsFolder: join(import.meta.dirname, "../src/db/migrations"),
+}).then(() =>
+	serve({
+		fetch(request, httpBindings) {
+			return app.fetch(request, { ...env, ...httpBindings });
+		},
+		port: env.PORT,
+	}),
+);
