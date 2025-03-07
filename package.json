@@ -1,7 +1,7 @@
 {
 	"name": "realworld-hono-drizzle",
 	"description": "A RealWorld backend built with Hono and Drizzle",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"type": "module",
 	"exports": {
 		".": {
@@ -34,6 +34,7 @@
 		"@hono/valibot-validator": "^0.5.2",
 		"@libsql/client": "^0.14.0",
 		"@sindresorhus/slugify": "^2.2.1",
+		"@snaplet/copycat": "^6.0.0",
 		"bcryptjs": "^3.0.2",
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.40.0",
@@ -42,7 +43,6 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@snaplet/copycat": "^6.0.0",
 		"@types/node": "^20.17.22",
 		"drizzle-kit": "^0.30.5",
 		"husky": "^9.1.7",
