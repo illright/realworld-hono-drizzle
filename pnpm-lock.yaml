@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.13.8
-        version: 1.13.8(hono@4.7.2)
+        version: 1.13.8(hono@4.9.7)
       '@hono/valibot-validator':
         specifier: ^0.5.2
-        version: 0.5.2(hono@4.7.2)(valibot@1.0.0-rc.3(typescript@5.8.2))
+        version: 0.5.2(hono@4.9.7)(valibot@1.0.0-rc.3(typescript@5.8.2))
       '@libsql/client':
         specifier: ^0.14.0
         version: 0.14.0
@@ -34,7 +34,7 @@ importers:
         version: 0.40.0(@libsql/client@0.14.0)(gel@2.0.0)
       hono:
         specifier: ^4.7.2
-        version: 4.7.2
+        version: 4.9.7
       valibot:
         specifier: 1.0.0-rc.3
         version: 1.0.0-rc.3(typescript@5.8.2)
@@ -1026,8 +1026,8 @@ packages:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
     hasBin: true
 
-  hono@4.7.2:
-    resolution: {integrity: sha512-8V5XxoOF6SI12jkHkzX/6aLBMU5GEF5g387EjVSQipS0DlxWgWGSMeEayY3CRBjtTUQYwLHx9JYouWqKzy2Vng==}
+  hono@4.9.7:
+    resolution: {integrity: sha512-t4Te6ERzIaC48W3x4hJmBwgNlLhmiEdEE5ViYb02ffw4ignHNHa5IBtPjmbKstmtKa8X6C35iWwK4HaqvrzG9w==}
     engines: {node: '>=16.9.0'}
 
   husky@9.1.7:
@@ -1202,6 +1202,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   string-argv@0.3.2:
     resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
@@ -1597,13 +1598,13 @@ snapshots:
 
   '@faker-js/faker@8.4.1': {}
 
-  '@hono/node-server@1.13.8(hono@4.7.2)':
+  '@hono/node-server@1.13.8(hono@4.9.7)':
     dependencies:
-      hono: 4.7.2
+      hono: 4.9.7
 
-  '@hono/valibot-validator@0.5.2(hono@4.7.2)(valibot@1.0.0-rc.3(typescript@5.8.2))':
+  '@hono/valibot-validator@0.5.2(hono@4.9.7)(valibot@1.0.0-rc.3(typescript@5.8.2))':
     dependencies:
-      hono: 4.7.2
+      hono: 4.9.7
       valibot: 1.0.0-rc.3(typescript@5.8.2)
 
   '@isaacs/cliui@8.0.2':
@@ -2006,7 +2007,7 @@ snapshots:
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
-  hono@4.7.2: {}
+  hono@4.9.7: {}
 
   husky@9.1.7: {}
 
