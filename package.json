@@ -39,7 +39,7 @@
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.40.0",
 		"hono": "^4.7.2",
-		"valibot": "1.0.0-rc.3"
+		"valibot": "1.2.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
