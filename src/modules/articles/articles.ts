@@ -2,7 +2,6 @@ import { vValidator } from "@hono/valibot-validator";
 import slugify from "@sindresorhus/slugify";
 import {
 	and,
-	count,
 	countDistinct,
 	desc,
 	eq,
