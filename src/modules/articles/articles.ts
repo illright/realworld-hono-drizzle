@@ -200,10 +200,44 @@ articlesModule.get("/", exposeToken, async (c) => {
 		.groupBy(articlesTable.slug)
 		.orderBy(desc(articlesTable.createdAt));
 
+	const totalCountResult = await db
+		.select({ count: countDistinct(articlesTable.slug) })
+		.from(articlesTable)
+		.leftJoin(
+			articleFavoriteTable,
+			eq(articlesTable.slug, articleFavoriteTable.articleSlug),
+		)
+		.leftJoin(
+			articleTagTable,
+			eq(articlesTable.slug, articleTagTable.articleSlug),
+		)
+		.innerJoin(usersTable, eq(articlesTable.authorId, usersTable.id))
+		.where(
+			and(
+				slugsWithTagFilter
+					? exists(
+							db
+								.select()
+								.from(slugsWithTagFilter)
+								.where(eq(slugsWithTagFilter.slug, articlesTable.slug)),
+						)
+					: undefined,
+				authorFilter ? eq(usersTable.username, authorFilter) : undefined,
+				slugsWithFavoritedFilter
+					? exists(
+							db
+								.select()
+								.from(slugsWithFavoritedFilter)
+								.where(eq(slugsWithFavoritedFilter.slug, articlesTable.slug)),
+						)
+					: undefined,
+			),
+		);
+
 	return c.json(
 		parse(MultipleArticlesResponse, {
 			articles,
-			articlesCount: articles.length,
+			articlesCount: totalCountResult[0]?.count ?? 0,
 		}),
 	);
 });
@@ -265,10 +299,28 @@ articlesModule.get("/feed", jwtAuth, async (c) => {
 		.groupBy(articlesTable.slug)
 		.orderBy(desc(articlesTable.createdAt));
 
+	const totalCountResult = await db
+		.select({ count: countDistinct(articlesTable.slug) })
+		.from(articlesTable)
+		.leftJoin(
+			articleFavoriteTable,
+			eq(articlesTable.slug, articleFavoriteTable.articleSlug),
+		)
+		.leftJoin(
+			articleTagTable,
+			eq(articlesTable.slug, articleTagTable.articleSlug),
+		)
+		.innerJoin(usersTable, eq(articlesTable.authorId, usersTable.id))
+		.rightJoin(
+			userFollowTable,
+			eq(userFollowTable.followedId, articlesTable.authorId),
+		)
+		.where(eq(userFollowTable.followerId, self.id));
+
 	return c.json(
 		parse(MultipleArticlesResponse, {
 			articles,
-			articlesCount: articles.length,
+			articlesCount: totalCountResult[0]?.count ?? 0,
 		}),
 	);
 });
