@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.7
-        version: 1.19.7(hono@4.11.1)
+        version: 1.19.7(hono@4.11.7)
       '@hono/valibot-validator':
         specifier: ^0.5.3
-        version: 0.5.3(hono@4.11.1)(valibot@1.2.0(typescript@5.9.3))
+        version: 0.5.3(hono@4.11.7)(valibot@1.2.0(typescript@5.9.3))
       '@libsql/client':
         specifier: ^0.14.0
         version: 0.14.0
@@ -34,7 +34,7 @@ importers:
         version: 0.40.1(@libsql/client@0.14.0)(gel@2.2.0)
       hono:
         specifier: ^4.11.1
-        version: 4.11.1
+        version: 4.11.7
       valibot:
         specifier: 1.2.0
         version: 1.2.0(typescript@5.9.3)
@@ -1014,8 +1014,8 @@ packages:
   get-tsconfig@4.13.0:
     resolution: {integrity: sha512-1VKTZJCwBrvbd+Wn3AOgQP/2Av+TfTCOlE4AcRJE72W1ksZXbAx8PPBR9RzgTeSPzlPMHrbANMH3LbltH73wxQ==}
 
-  hono@4.11.1:
-    resolution: {integrity: sha512-KsFcH0xxHes0J4zaQgWbYwmz3UPOOskdqZmItstUG93+Wk1ePBLkLGwbP9zlmh1BFUiL8Qp+Xfu9P7feJWpGNg==}
+  hono@4.11.7:
+    resolution: {integrity: sha512-l7qMiNee7t82bH3SeyUCt9UF15EVmaBvsppY2zQtrbIhl/yzBTny+YUxsVjSjQ6gaqaeVtZmGocom8TzBlA4Yw==}
     engines: {node: '>=16.9.0'}
 
   husky@9.1.7:
@@ -1523,13 +1523,13 @@ snapshots:
 
   '@faker-js/faker@8.4.1': {}
 
-  '@hono/node-server@1.19.7(hono@4.11.1)':
+  '@hono/node-server@1.19.7(hono@4.11.7)':
     dependencies:
-      hono: 4.11.1
+      hono: 4.11.7
 
-  '@hono/valibot-validator@0.5.3(hono@4.11.1)(valibot@1.2.0(typescript@5.9.3))':
+  '@hono/valibot-validator@0.5.3(hono@4.11.7)(valibot@1.2.0(typescript@5.9.3))':
     dependencies:
-      hono: 4.11.1
+      hono: 4.11.7
       valibot: 1.2.0(typescript@5.9.3)
 
   '@jridgewell/gen-mapping@0.3.13':
@@ -1894,7 +1894,7 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  hono@4.11.1: {}
+  hono@4.11.7: {}
 
   husky@9.1.7: {}
 
