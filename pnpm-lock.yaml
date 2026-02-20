@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.7
-        version: 1.19.7(hono@4.11.1)
+        version: 1.19.7(hono@4.11.10)
       '@hono/valibot-validator':
         specifier: ^0.5.3
-        version: 0.5.3(hono@4.11.1)(valibot@1.2.0(typescript@5.9.3))
+        version: 0.5.3(hono@4.11.10)(valibot@1.2.0(typescript@5.9.3))
       '@libsql/client':
         specifier: ^0.14.0
         version: 0.14.0
@@ -34,7 +34,7 @@ importers:
         version: 0.40.1(@libsql/client@0.14.0)(gel@2.2.0)
       hono:
         specifier: ^4.11.1
-        version: 4.11.1
+        version: 4.11.10
       valibot:
         specifier: 1.2.0
         version: 1.2.0(typescript@5.9.3)
@@ -1014,8 +1014,8 @@ packages:
   get-tsconfig@4.13.0:
     resolution: {integrity: sha512-1VKTZJCwBrvbd+Wn3AOgQP/2Av+TfTCOlE4AcRJE72W1ksZXbAx8PPBR9RzgTeSPzlPMHrbANMH3LbltH73wxQ==}
 
-  hono@4.11.1:
-    resolution: {integrity: sha512-KsFcH0xxHes0J4zaQgWbYwmz3UPOOskdqZmItstUG93+Wk1ePBLkLGwbP9zlmh1BFUiL8Qp+Xfu9P7feJWpGNg==}
+  hono@4.11.10:
+    resolution: {integrity: sha512-kyWP5PAiMooEvGrA9jcD3IXF7ATu8+o7B3KCbPXid5se52NPqnOpM/r9qeW2heMnOekF4kqR1fXJqCYeCLKrZg==}
     engines: {node: '>=16.9.0'}
 
   husky@9.1.7:
@@ -1023,9 +1023,9 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  isexe@3.1.1:
-    resolution: {integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==}
-    engines: {node: '>=16'}
+  isexe@3.1.5:
+    resolution: {integrity: sha512-6B3tLtFqtQS4ekarvLVMZ+X+VlvQekbe4taUkf/rhVO3d/h0M2rfARm/pXLcPEsjjMsFgrFgSrhQIxcSVrBz8w==}
+    engines: {node: '>=18'}
 
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
@@ -1129,8 +1129,8 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  semver@7.7.3:
-    resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
+  semver@7.7.4:
+    resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -1523,13 +1523,13 @@ snapshots:
 
   '@faker-js/faker@8.4.1': {}
 
-  '@hono/node-server@1.19.7(hono@4.11.1)':
+  '@hono/node-server@1.19.7(hono@4.11.10)':
     dependencies:
-      hono: 4.11.1
+      hono: 4.11.10
 
-  '@hono/valibot-validator@0.5.3(hono@4.11.1)(valibot@1.2.0(typescript@5.9.3))':
+  '@hono/valibot-validator@0.5.3(hono@4.11.10)(valibot@1.2.0(typescript@5.9.3))':
     dependencies:
-      hono: 4.11.1
+      hono: 4.11.10
       valibot: 1.2.0(typescript@5.9.3)
 
   '@jridgewell/gen-mapping@0.3.13':
@@ -1883,7 +1883,7 @@ snapshots:
       '@petamoriken/float16': 3.9.3
       debug: 4.4.3
       env-paths: 3.0.0
-      semver: 7.7.3
+      semver: 7.7.4
       shell-quote: 1.8.3
       which: 4.0.0
     transitivePeerDependencies:
@@ -1894,11 +1894,11 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  hono@4.11.1: {}
+  hono@4.11.10: {}
 
   husky@9.1.7: {}
 
-  isexe@3.1.1:
+  isexe@3.1.5:
     optional: true
 
   joycon@3.1.1: {}
@@ -2009,7 +2009,7 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.54.0
       fsevents: 2.3.3
 
-  semver@7.7.3:
+  semver@7.7.4:
     optional: true
 
   shell-quote@1.8.3:
@@ -2107,7 +2107,7 @@ snapshots:
 
   which@4.0.0:
     dependencies:
-      isexe: 3.1.1
+      isexe: 3.1.5
     optional: true
 
   ws@8.18.3: {}
